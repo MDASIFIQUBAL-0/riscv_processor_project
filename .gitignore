@@ -1,0 +1,16 @@
+# Simulation artifacts & waveform dumps
+*.vcd
+processor_sim
+*.vvp
+*.o
+
+# Synthesis output netlists & reports
+synthesis/synthesized_netlist.v
+*.log
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/

@@ -1,0 +1,36 @@
+# ============================================================================
+# Yosys RTL Synthesis Script
+# Project: Simplified 32-bit RISC-V Processor (RV32I)
+# Target:  Generic Gate-Level Mapping & Area/Cell Statistics
+# ============================================================================
+
+# Step 1: Read all RTL Verilog source files
+read_verilog rtl/program_counter.v
+read_verilog rtl/instruction_memory.v
+read_verilog rtl/register_file.v
+read_verilog rtl/immediate_generator.v
+read_verilog rtl/control_unit.v
+read_verilog rtl/alu.v
+read_verilog rtl/data_memory.v
+read_verilog rtl/riscv_processor.v
+
+# Step 2: Elaborate design hierarchy and verify top-level connectivity
+hierarchy -check -top riscv_processor
+
+# Step 3: High-Level RTL Synthesis
+# - proc: converts always blocks and processes to latches/registers/multiplexers
+# - opt: performs dead code elimination and constant propagation
+# - fsm: extracts and optimizes finite state machines
+# - memory: synthesizes multi-port RAM/ROM arrays into flip-flops or address decoders
+proc; opt
+fsm; opt
+memory; opt
+
+# Step 4: Generic Technology Mapping (converts high-level operators to standard logic cells)
+techmap; opt
+
+# Step 5: Report Synthesis Statistics (Logic cell counts, wires, registers)
+stat
+
+# Step 6: Export Gate-Level Verilog Netlist
+write_verilog synthesis/synthesized_netlist.v

@@ -1,0 +1,74 @@
+// ============================================================================
+// RISC-V RV32I Machine Code Program Memory File
+// Format: Hexadecimal 32-bit words loaded via $readmemh
+// Each entry corresponds to one 4-byte instruction word.
+// ============================================================================
+
+// [0x00] ADDI x1, x0, 10       ; x1 = 0 + 10 = 10
+00a00093
+
+// [0x04] ADDI x2, x0, 20       ; x2 = 0 + 20 = 20
+01400113
+
+// [0x08] ADD  x3, x1, x2       ; x3 = x1 + x2 = 10 + 20 = 30
+002081b3
+
+// [0x0C] SW   x3, 0(x0)        ; DataMem[0] = x3 = 30
+00302023
+
+// [0x10] LW   x4, 0(x0)        ; x4 = DataMem[0] = 30
+00002203
+
+// [0x14] SUB  x5, x3, x1       ; x5 = x3 - x1 = 30 - 10 = 20
+401182b3
+
+// [0x18] AND  x6, x1, x2       ; x6 = x1 & x2 = 10 & 20 = 0
+0020f333
+
+// [0x1C] OR   x7, x1, x2       ; x7 = x1 | x2 = 10 | 20 = 30
+0020e3b3
+
+// [0x20] XOR  x8, x1, x2       ; x8 = x1 ^ x2 = 10 ^ 20 = 30
+0020c433
+
+// [0x24] SLT  x9, x1, x2       ; x9 = (x1 < x2) = (10 < 20) = 1
+0020a4b3
+
+// [0x28] SLL  x10, x1, x9      ; x10 = x1 << x9 = 10 << 1 = 20
+00909533
+
+// [0x2C] SRL  x11, x10, x9     ; x11 = x10 >> x9 = 20 >> 1 = 10
+009555b3
+
+// [0x30] ADDI x12, x0, -5      ; x12 = -5 = 0xFFFFFFFB (sign extension test)
+ffb00613
+
+// [0x34] ADDI x0, x0, 99       ; Attempt write to x0; x0 must remain 0
+06300013
+
+// [0x38] BEQ  x2, x10, +8      ; (x2 == x10 == 20) -> Equal! Branch forward 8 bytes (PC = 0x38 + 8 = 0x40)
+00a10463
+
+// [0x3C] ADDI x13, x0, 99      ; SKIPPED TRAP: Should NOT execute
+06300693
+
+// [0x40] ADDI x13, x0, 1       ; Branch Target: x13 = 1 (Confirms BEQ was taken)
+00100693
+
+// [0x44] BEQ  x1, x2, +8       ; (x1=10 != x2=20) -> Not equal! Branch NOT taken (continues to 0x48)
+00208463
+
+// [0x48] ADDI x14, x0, 2       ; Must execute: x14 = 2 (Confirms BEQ fall-through)
+00200713
+
+// [0x4C] BNE  x1, x2, +8       ; (x1=10 != x2=20) -> Not equal! BNE taken (skips to 0x54)
+00209463
+
+// [0x50] ADDI x15, x0, 99      ; SKIPPED TRAP: Should NOT execute
+06300793
+
+// [0x54] ADDI x15, x0, 3       ; BNE Target: x15 = 3 (Confirms BNE was taken)
+00300793
+
+// [0x58] BEQ  x0, x0, 0        ; Halt loop: branch to self
+00000063
